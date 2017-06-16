@@ -98,8 +98,8 @@ namespace CondenserDotNet.Client
                     s.Checks[0].DeregisterCriticalServiceAfter = (int)serviceManager.DeregisterIfCriticalAfter.TotalMilliseconds + "ms";
                 }
             }
-            var content = HttpUtils.GetStringContent(s);
-            var response = await serviceManager.Client.PutAsync("/v1/agent/service/register", content);
+            
+            var response = await serviceManager.Client.PutAsync("/v1/agent/service/register", s);
             if (response.IsSuccessStatusCode)
             {
                 serviceManager.RegisteredService = s;

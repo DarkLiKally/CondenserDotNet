@@ -9,11 +9,11 @@ namespace CondenserDotNet.Client
     public static class MaintenanceExtensions
     {
         private const string _url = "/v1/agent/service/maintenance/";
-               
+
         public static Task EnableMaintenanceModeAsync(this IServiceManager manager, string reason)
         {
             var url = _url + $"{manager.ServiceId}?enable=true&reason={Uri.EscapeDataString(reason)}";
-            return manager.Client.PutAsync(url, null);
+            return manager.Client.PutAsync(url);
         }
 
         public static Task DisableMaintenanceModeAsync(this IServiceManager manager)

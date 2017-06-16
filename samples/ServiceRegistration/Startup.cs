@@ -21,7 +21,7 @@ namespace ServiceRegistration
 
         public void Configure(IApplicationBuilder app, IServiceManager manager)
         {
-            manager.AddHttpHealthCheck("health", 10).RegisterServiceAsync();
+            var ignore = manager.AddHttpHealthCheck("health", 10).RegisterServiceAsync();
             var secondOps = Options.Create(new ServiceManagerConfig()
             {
                 ServiceName = "TestService",

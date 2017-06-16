@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using CondenserDotNet.Client.DataContracts;
+using CondenserDotNet.Core;
 
 namespace CondenserDotNet.Client
 {
@@ -16,7 +17,7 @@ namespace CondenserDotNet.Client
         string ServiceAddress { get; }
         int ServicePort { get; }
         CancellationToken Cancelled { get; }
-        HttpClient Client { get; }
+        ConsulApiClient Client { get; }
         List<string> SupportedUrls { get; }
         HealthConfiguration HealthConfig { get; }
         Service RegisteredService { get; set; }

@@ -12,11 +12,7 @@ namespace CondenserDotNet.Core
     public static class HttpUtils
     {
         private static readonly string _indexHeader = "X-Consul-Index";
-        public static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
-        {
-            ContractResolver = new DefaultContractResolver(),
-            NullValueHandling = NullValueHandling.Ignore
-        };
+        
         public static readonly string ApiUrl = "/v1/";
         public static readonly string ServiceCatalogUrl = ApiUrl + "catalog/services";
         public static readonly string DatacenterCatalogUrl = ApiUrl + "catalog/datacenters";
@@ -28,9 +24,7 @@ namespace CondenserDotNet.Core
         public static readonly string DefaultHost = "localhost";
         public static readonly int DefaultPort = 8500;
         public static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(6);
-
-        public static StringContent GetStringContent<T>(T objectForContent) => new StringContent(JsonConvert.SerializeObject(objectForContent, JsonSettings), Encoding.UTF8, "application/json");
-
+                
         public static HttpClient CreateClient(string agentHost = null, int? agentPort = null)
         {
             var host = agentHost ?? DefaultHost;
@@ -58,23 +52,7 @@ namespace CondenserDotNet.Core
         {
             return JsonConvert.DeserializeObject<T>(sTask.Result);
         });
-
-        public static Task<T> GetAsync<T>(this HttpClient client, string uri) =>
-        client.GetStringAsync(uri).ContinueWith(resultTask =>
-        {
-            return JsonConvert.DeserializeObject<T>(resultTask.Result);
-        });
-
-        public static StringContent GetStringContent(string stringForContent)
-        {
-            if (stringForContent == null)
-            {
-                return null;
-            }
-            var returnValue = new StringContent(stringForContent, Encoding.UTF8);
-            return returnValue;
-        }
-
+        
         public static string GetConsulIndex(this HttpResponseMessage response)
         {
             if (!response.Headers.TryGetValues(_indexHeader, out IEnumerable<string> results))

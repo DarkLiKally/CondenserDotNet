@@ -18,7 +18,7 @@ namespace CondenserDotNet.Configuration.Consul
         private const char CorePath = ':';
         private const string ConsulKeyPath = "/v1/kv/";
 
-        private readonly HttpClient _httpClient;
+        private readonly ConsulApiClient _httpClient;
         private readonly CancellationTokenSource _disposed = new CancellationTokenSource();
         private readonly IKeyParser _parser;
         private ILogger _logger;
@@ -29,7 +29,7 @@ namespace CondenserDotNet.Configuration.Consul
             var agentInfo = agentConfig?.Value ?? new ConsulRegistryConfig();
             _parser = agentInfo.KeyParser;
 
-            _httpClient = HttpUtils.CreateClient(agentInfo.AgentAddress, agentInfo.AgentPort);
+            _httpClient = new ConsulApiClient(HttpUtils.CreateClient(agentInfo.AgentAddress, agentInfo.AgentPort));
         }
 
         private class WatchConsul
@@ -70,7 +70,7 @@ namespace CondenserDotNet.Configuration.Consul
                 var dictionary = await BuildDictionaryAsync(keyPath, response);
                 return (true, dictionary);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger?.LogError(100, ex, "There was an exception getting the keys");
                 throw;
@@ -92,7 +92,7 @@ namespace CondenserDotNet.Configuration.Consul
                     consulState.ConsulIndex = newConsulIndex;
                     return (false, null);
                 }
-                
+
                 if (newConsulIndex == consulState.ConsulIndex)
                 {
                     consulState.ConsulIndex = newConsulIndex;
@@ -102,7 +102,7 @@ namespace CondenserDotNet.Configuration.Consul
                 var dictionary = await BuildDictionaryAsync(keyPath, response);
                 return (true, dictionary);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger?.LogError(100, ex, "Error trying to watch a key {keyPath}", keyPath);
                 throw;
@@ -126,7 +126,7 @@ namespace CondenserDotNet.Configuration.Consul
 
         public async Task<bool> TrySetKeyAsync(string keyPath, string value)
         {
-            var response = await _httpClient.PutAsync($"{ConsulKeyPath}{keyPath}", HttpUtils.GetStringContent(value));
+            var response = await _httpClient.PutAsync($"{ConsulKeyPath}{keyPath}", value);
             if (!response.IsSuccessStatusCode)
             {
                 return false;

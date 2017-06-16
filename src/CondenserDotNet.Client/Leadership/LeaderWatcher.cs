@@ -94,17 +94,17 @@ namespace CondenserDotNet.Client.Leadership
             }
         }
 
-        private StringContent GetServiceInformation() =>
-            HttpUtils.GetStringContent(new InformationService()
+        private InformationService GetServiceInformation() =>
+            new InformationService()
             {
                 Address = _serviceManager.ServiceAddress,
                 ID = _serviceManager.ServiceId,
                 Port = _serviceManager.ServicePort,
                 Service = _serviceManager.ServiceName,
                 Tags = _serviceManager.RegisteredService.Tags.ToArray()
-            });
+            };
 
-        private StringContent GetCreateSession()
+        private SessionCreate GetCreateSession()
         {
             var checks = new string[_serviceManager.RegisteredService.Checks.Count + 1];
             for (var i = 0; i < _serviceManager.RegisteredService.Checks.Count; i++)
@@ -119,7 +119,7 @@ namespace CondenserDotNet.Client.Leadership
                 LockDelay = "1s",
                 Name = $"{_serviceManager.ServiceId}:LeaderElection:{_keyToWatch.Replace('/', ':')}"
             };
-            return HttpUtils.GetStringContent(sessionCreate);
+            return sessionCreate;
         }
 
         public Task<InformationService> GetCurrentLeaderAsync() => _currentLeaderEvent.WaitAsync();

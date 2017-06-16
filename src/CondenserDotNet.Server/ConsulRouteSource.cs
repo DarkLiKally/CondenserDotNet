@@ -10,7 +10,7 @@ namespace CondenserDotNet.Server
 {
     public class ConsulRouteSource : IRouteSource
     {
-        private readonly HttpClient _client;
+        private readonly ConsulApiClient _client;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
         private readonly string _healthCheckUri;
         private readonly string _serviceLookupUri;
@@ -18,10 +18,9 @@ namespace CondenserDotNet.Server
         private readonly ILogger _logger;
         static readonly HealthCheck[] EmptyChecks = new HealthCheck[0];
 
-        public ConsulRouteSource(CondenserConfiguration config,
-            ILoggerFactory logger)
+        public ConsulRouteSource(CondenserConfiguration config, ILoggerFactory logger)
         {
-            _client = HttpUtils.CreateClient(config.AgentAddress, config.AgentPort);
+            _client = new ConsulApiClient(HttpUtils.CreateClient(config.AgentAddress, config.AgentPort));
             _healthCheckUri = $"{HttpUtils.HealthAnyUrl}?index=";
             _serviceLookupUri = $"{HttpUtils.SingleServiceCatalogUrl}";
 
@@ -41,12 +40,12 @@ namespace CondenserDotNet.Server
             }
             var newConsulIndex = result.GetConsulIndex();
 
-            if (newConsulIndex  == _lastConsulIndex)
+            if (newConsulIndex == _lastConsulIndex)
             {
                 return (false, EmptyChecks);
             }
 
-            _lastConsulIndex = newConsulIndex ;
+            _lastConsulIndex = newConsulIndex;
 
             _logger?.LogInformation("Got new set of health information new index is {index}", _lastConsulIndex);
 

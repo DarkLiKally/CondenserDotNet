@@ -26,7 +26,7 @@ namespace CondenserDotNet.Client
 
             var config = optionsConfig.Value;
             Logger = logFactory?.CreateLogger<ServiceManager>();
-            Client = httpClientFactory?.Invoke() ?? HttpUtils.CreateClient();
+            Client = new ConsulApiClient(httpClientFactory?.Invoke() ?? HttpUtils.CreateClient());
             config.SetDefaults(server);
             ServiceId = config.ServiceId;
             ServiceName = config.ServiceName;
@@ -36,7 +36,7 @@ namespace CondenserDotNet.Client
 
         public List<string> SupportedUrls => _supportedUrls;
         public ILogger Logger { get; }
-        public HttpClient Client { get; }
+        public ConsulApiClient Client { get; }
         public HealthConfiguration HealthConfig { get; private set; } = new HealthConfiguration();
         public Service RegisteredService { get; set; }
         public string ServiceId { get; }
@@ -68,7 +68,7 @@ namespace CondenserDotNet.Client
                 _disposed = true;
             }
         }
-        
+
         ~ServiceManager() => Dispose(false);
     }
 }

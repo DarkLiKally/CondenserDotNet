@@ -5,6 +5,7 @@ using System.Text;
 using CondenserDotNet.Client.DataContracts;
 using System.Net.Http;
 using System.Threading;
+using CondenserDotNet.Core;
 
 namespace CondenserTests.Fakes
 {
@@ -26,7 +27,7 @@ namespace CondenserTests.Fakes
 
         public CancellationToken Cancelled => throw new NotImplementedException();
 
-        public HttpClient Client => throw new NotImplementedException();
+        public ConsulApiClient Client => throw new NotImplementedException();
 
         public List<string> SupportedUrls => throw new NotImplementedException();
 
