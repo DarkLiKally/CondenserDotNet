@@ -14,7 +14,7 @@ namespace Condenser.Tests.Integration
         {
             var serviceName = Guid.NewGuid().ToString();
             var opts = Options.Create(new ServiceManagerConfig() { ServicePort = 2222 });
-            using (var manager = new ServiceManager(opts))
+            using (var manager = new ServiceManager(opts, null))
             {
                 manager.AddApiUrl("api/testurl");
                 var registrationResult = await manager.RegisterServiceAsync();
@@ -27,7 +27,7 @@ namespace Condenser.Tests.Integration
         {
             var serviceName = Guid.NewGuid().ToString();
             var opts = Options.Create(new ServiceManagerConfig() { ServicePort = 2222 });
-            using (var manager = new ServiceManager(opts))
+            using (var manager = new ServiceManager(opts, null))
             {
                 manager.AddTtlHealthCheck(10);
                 var registerResult = await manager.RegisterServiceAsync();
@@ -41,8 +41,8 @@ namespace Condenser.Tests.Integration
         {
             var serviceName = Guid.NewGuid().ToString();
             var opts = Options.Create(new ServiceManagerConfig() { ServicePort = 2222, ServiceName = serviceName });
-            using (var manager = new ServiceManager(opts))
-            using (var registry = new ServiceRegistry())
+            using (var manager = new ServiceManager(opts, null))
+            using (var registry = new ServiceRegistry(null))
             {
                 var registrationResult = await manager.RegisterServiceAsync();
                 Assert.Equal(true, registrationResult);

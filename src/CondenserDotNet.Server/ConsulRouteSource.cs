@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CondenserDotNet.Core;
 using CondenserDotNet.Server.DataContracts;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CondenserDotNet.Server
 {
@@ -18,9 +19,9 @@ namespace CondenserDotNet.Server
         private readonly ILogger _logger;
         static readonly HealthCheck[] EmptyChecks = new HealthCheck[0];
 
-        public ConsulRouteSource(CondenserConfiguration config, ILoggerFactory logger)
+        public ConsulRouteSource(IOptions<AgentConfig> config, ILoggerFactory logger)
         {
-            _client = new ConsulApiClient(HttpUtils.CreateClient(config.AgentAddress, config.AgentPort));
+            _client = new ConsulApiClient(config.Value);
             _healthCheckUri = $"{HttpUtils.HealthAnyUrl}?index=";
             _serviceLookupUri = $"{HttpUtils.SingleServiceCatalogUrl}";
 

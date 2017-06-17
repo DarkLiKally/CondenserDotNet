@@ -23,13 +23,13 @@ namespace CondenserDotNet.Configuration.Consul
         private readonly IKeyParser _parser;
         private ILogger _logger;
 
-        public ConsulConfigSource(IOptions<ConsulRegistryConfig> agentConfig, ILogger logger)
+        public ConsulConfigSource(IOptions<AgentConfig> agentConfig, IOptions<ConsulRegistryConfig> registryConfig, ILogger logger)
         {
             _logger = logger;
-            var agentInfo = agentConfig?.Value ?? new ConsulRegistryConfig();
+            var agentInfo = registryConfig?.Value ?? new ConsulRegistryConfig();
             _parser = agentInfo.KeyParser;
 
-            _httpClient = new ConsulApiClient(HttpUtils.CreateClient(agentInfo.AgentAddress, agentInfo.AgentPort));
+            _httpClient = new ConsulApiClient(agentConfig?.Value);
         }
 
         private class WatchConsul

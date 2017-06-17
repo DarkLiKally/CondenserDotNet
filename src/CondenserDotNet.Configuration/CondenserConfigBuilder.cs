@@ -21,24 +21,11 @@ namespace CondenserDotNet.Configuration
             _config.KeyParser = new JsonKeyValueParser();
             return this;
         }
-
-        public CondenserConfigBuilder WithAgentPort(int port)
-        {
-            _config.AgentPort = port;
-            return this;
-        }
-
-        public CondenserConfigBuilder WithAgentAddress(string address)
-        {
-            _config.AgentAddress = address;
-            return this;
-        }
-
-
+        
         public IConfigurationRegistry Build()
         {
             var options = Options.Create(_config);
-            return new ConsulRegistry(options);
+            return new ConsulRegistry(options, null);
         }
     }
 }

@@ -18,8 +18,8 @@ namespace Condenser.Tests.Integration
             var serviceName = Guid.NewGuid().ToString();
             var serviceCount = 100;
             var opts = Options.Create(new ServiceManagerConfig() { ServiceName = serviceName, ServicePort = 2222 });
-            using (var manager = new ServiceManager(opts))
-            using (var register = new ServiceRegistry())
+            using (var manager = new ServiceManager(opts,null))
+            using (var register = new ServiceRegistry(null))
             {
                 register.SetServiceListCallback(serviceName, list =>
                 {

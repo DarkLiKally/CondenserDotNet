@@ -27,7 +27,7 @@ namespace ServiceRegistration
                 ServiceName = "TestService",
                 ServicePort = 5000,
             });
-            var manager2 = new ServiceManager(secondOps).AddHttpHealthCheck("health", 10).RegisterServiceAsync(); 
+            var manager2 = new ServiceManager(secondOps, null).AddHttpHealthCheck("health", 10).RegisterServiceAsync(); 
             app.UseMvcWithDefaultRoute();
         }
     }

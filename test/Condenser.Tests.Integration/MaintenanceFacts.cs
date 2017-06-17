@@ -18,9 +18,9 @@ namespace Condenser.Tests.Integration
             config.Value.ServiceAddress = "127.0.0.1";
             config.Value.ServicePort = 777;
             config.Value.ServiceName = Guid.NewGuid().ToString();
-            var manager = new ServiceManager(config);
+            var manager = new ServiceManager(config, null);
             await manager.RegisterServiceAsync();
-            var registry = new ServiceRegistry();
+            var registry = new ServiceRegistry(null);
             var instance = await registry.GetServiceInstanceAsync(config.Value.ServiceName);
             Assert.NotNull(instance);
 

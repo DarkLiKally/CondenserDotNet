@@ -5,6 +5,7 @@ using CondenserDotNet.Client;
 using Xunit;
 using CondenserDotNet.Client.Leadership;
 using Microsoft.Extensions.Options;
+using CondenserDotNet.Core;
 
 namespace Condenser.Tests.Integration
 {
@@ -26,7 +27,7 @@ namespace Condenser.Tests.Integration
                     {
                         ServicePort = 2222,
                         ServiceName = $"{key}{serviceId}"
-                    }));
+                    }), Options.Create(new AgentConfig()));
 
         [Fact]
         public async Task TestLeadershipIsBlocking()

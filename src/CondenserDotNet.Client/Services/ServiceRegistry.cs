@@ -7,19 +7,20 @@ using CondenserDotNet.Core.DataContracts;
 using CondenserDotNet.Core.Routing;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CondenserDotNet.Client.Services
 {
     public class ServiceRegistry : IServiceRegistry, IDisposable
     {
-        private readonly HttpClient _client;
+        private readonly ConsulApiClient _client;
         private readonly Dictionary<string, ServiceWatcher> _watchedServices = new Dictionary<string, ServiceWatcher>(StringComparer.OrdinalIgnoreCase);
         private readonly ILogger _logger;
 
-        public ServiceRegistry(Func<HttpClient> httpClientFactory = null, ILoggerFactory loggerFactory = null)
+        public ServiceRegistry(IOptions<AgentConfig> config, ILoggerFactory loggerFactory = null)
         {
             _logger = loggerFactory?.CreateLogger<ServiceRegistry>();
-            _client = httpClientFactory?.Invoke() ?? HttpUtils.CreateClient();
+            _client = new ConsulApiClient(config?.Value);
         }
 
         public async Task<IEnumerable<string>> GetAvailableServicesAsync()

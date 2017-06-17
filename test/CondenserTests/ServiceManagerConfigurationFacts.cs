@@ -13,7 +13,7 @@ namespace CondenserTests
         public void DefaultsOverrideCorrectlyTest()
         {
             var opts = Options.Create(new ServiceManagerConfig() { ServicePort = 2222, ServiceName = "Test1", ServiceId = "ServiceId" });
-            using (var manager = new ServiceManager(opts))
+            using (var manager = new ServiceManager(opts, null))
             {
                 Assert.Equal(2222, manager.ServicePort);
                 Assert.Equal("Test1", manager.ServiceName);
@@ -25,7 +25,7 @@ namespace CondenserTests
         public void DefaultsCorrectly()
         {
             var opts = Options.Create(new ServiceManagerConfig() { ServicePort = 2222 });
-            using (var manager = new ServiceManager(opts))
+            using (var manager = new ServiceManager(opts, null))
             {
                 Assert.NotNull(manager.ServiceName);
                 Assert.NotNull(manager.ServiceId);

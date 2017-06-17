@@ -188,7 +188,7 @@ namespace Condenser.Tests.Integration
         public async Task CanLoadUsingConsulJsonConfigurationProvider()
         {
             var keyname = Guid.NewGuid().ToString();
-            using (var configRegistry = new ConsulRegistry(Options.Create<ConsulRegistryConfig>(new ConsulRegistryConfig() { KeyParser = new JsonKeyValueParser() })))
+            using (var configRegistry = new ConsulRegistry(Options.Create<ConsulRegistryConfig>(new ConsulRegistryConfig() { KeyParser = new JsonKeyValueParser() }), null))
             {
                 var settings = new SimpleSettings
                 {

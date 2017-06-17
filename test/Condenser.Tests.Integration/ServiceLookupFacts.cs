@@ -16,9 +16,9 @@ namespace Condenser.Tests.Integration
             var key = Guid.NewGuid().ToString();
             var opts = Options.Create(new ServiceManagerConfig() { ServiceName = key, ServiceId = key + "Id1", ServicePort = 2222 });
             var opts2 = Options.Create(new ServiceManagerConfig() { ServiceName = key, ServiceId = key + "Id2", ServicePort = 2222 });
-            using (var manager = new ServiceManager(opts))
-            using (var manager2 = new ServiceManager(opts2))
-            using (var serviceRegistry = new ServiceRegistry())
+            using (var manager = new ServiceManager(opts, null))
+            using (var manager2 = new ServiceManager(opts2, null))
+            using (var serviceRegistry = new ServiceRegistry(null))
             {
                 var registrationResult = await manager.RegisterServiceAsync();
                 Assert.Equal(true, registrationResult);
@@ -34,7 +34,7 @@ namespace Condenser.Tests.Integration
         [Fact]
         public async Task TestThatAnErrorIsReturnedWhenConsulIsNotAvailable()
         {
-            using (var serviceRegistry = new ServiceRegistry(() => new HttpClient() { BaseAddress = new Uri("http://localhost:7000") }))
+            using (var serviceRegistry = new ServiceRegistry(null))
             {
                 await Assert.ThrowsAsync<NoConsulConnectionException>(async () => await serviceRegistry.GetServiceInstanceAsync("TestService"));
             }
@@ -43,7 +43,7 @@ namespace Condenser.Tests.Integration
         [Fact]
         public async Task CheckStateIsReportedCorrectly()
         {
-            using (var serviceRegistry = new ServiceRegistry())
+            using (var serviceRegistry = new ServiceRegistry(null))
             {
                 var key = Guid.NewGuid().ToString();
                 var state = serviceRegistry.GetServiceCurrentState(key);
@@ -58,7 +58,7 @@ namespace Condenser.Tests.Integration
         [Fact]
         public async Task TestThatAnErrorIsReturnedWhenNoServiceIsAvailableInTheHandler()
         {
-            using (var serviceRegistry = new ServiceRegistry())
+            using (var serviceRegistry = new ServiceRegistry(null))
             {
                 var handler = serviceRegistry.GetHttpHandler();
                 var httpClient = new HttpClient(handler);
@@ -70,8 +70,8 @@ namespace Condenser.Tests.Integration
         {
             var serviceName = Guid.NewGuid().ToString();
             var opts = Options.Create(new ServiceManagerConfig() { ServiceName = serviceName, ServiceId = serviceName, ServicePort = 2222 });
-            using (var manager = new ServiceManager(opts))
-            using (var serviceRegistry = new ServiceRegistry())
+            using (var manager = new ServiceManager(opts, null))
+            using (var serviceRegistry = new ServiceRegistry(null))
             {
                 Assert.Null(await serviceRegistry.GetServiceInstanceAsync(serviceName));
                 await manager.RegisterServiceAsync();

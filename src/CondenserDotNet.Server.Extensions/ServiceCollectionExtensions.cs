@@ -25,13 +25,6 @@ namespace CondenserDotNet.Server
             IHealthConfig health, IRoutingConfig routingConfig, IHttpClientConfig httpClientConfig,
             IEnumerable<IRoutingStrategy<IService>> strategies)
         {
-            var config = new CondenserConfiguration
-            {
-                AgentPort = agentPort,
-                AgentAddress = agentAddress
-            };
-
-            self.AddSingleton(config);
             self.AddSingleton(health);
             self.AddSingleton(routingConfig);
             self.AddSingleton<Func<string, HttpClient>>(httpClientConfig.Create);

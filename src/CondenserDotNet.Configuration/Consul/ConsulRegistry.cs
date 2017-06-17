@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CondenserDotNet.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -23,17 +24,17 @@ namespace CondenserDotNet.Configuration.Consul
         public IConfigurationRoot Root => _root ?? (_root = _builder.Build());
         public ConfigurationBuilder Builder => _builder;
 
-        public ConsulRegistry(IOptions<ConsulRegistryConfig> agentConfig, ILoggerFactory loggerFactory = null)
+        public ConsulRegistry(IOptions<ConsulRegistryConfig> registryConfig, IOptions<AgentConfig> agentRegistry, ILoggerFactory loggerFactory = null)
         {
             _logger = loggerFactory?.CreateLogger<ConsulRegistry>();
-            _source = new ConsulConfigSource(agentConfig, _logger);
+            _source = new ConsulConfigSource(agentRegistry, registryConfig, _logger);
             _builder.AddConfigurationRegistry(this);
         }
 
         public ConsulRegistry(ILoggerFactory loggerFactory = null)
-            :this(null, loggerFactory)
+            : this(null, null, loggerFactory)
         {
-            
+
         }
 
         /// <summary>

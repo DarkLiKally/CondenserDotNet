@@ -17,7 +17,8 @@ namespace CondenserDotNet.Client
         private bool _disposed;
         private ITtlCheck _ttlCheck;
 
-        public ServiceManager(IOptions<ServiceManagerConfig> optionsConfig, Func<HttpClient> httpClientFactory = null, ILoggerFactory logFactory = null, IServer server = null)
+        public ServiceManager(IOptions<ServiceManagerConfig> optionsConfig,
+            IOptions<AgentConfig> agentConfig, ILoggerFactory logFactory = null, IServer server = null)
         {
             if (optionsConfig.Value.ServicePort == 0 && server == null)
             {
@@ -26,7 +27,7 @@ namespace CondenserDotNet.Client
 
             var config = optionsConfig.Value;
             Logger = logFactory?.CreateLogger<ServiceManager>();
-            Client = new ConsulApiClient(httpClientFactory?.Invoke() ?? HttpUtils.CreateClient());
+            Client = new ConsulApiClient(agentConfig?.Value);
             config.SetDefaults(server);
             ServiceId = config.ServiceId;
             ServiceName = config.ServiceName;

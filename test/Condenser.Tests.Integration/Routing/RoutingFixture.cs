@@ -45,7 +45,7 @@ namespace Condenser.Tests.Integration.Routing
 
             });
 
-            var serviceManager = new ServiceManager(options);
+            var serviceManager = new ServiceManager(options, null);
 
             var ignore = serviceManager
                 .AddHttpHealthCheck(HealthRoute, 3)

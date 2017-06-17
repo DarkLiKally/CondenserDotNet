@@ -25,7 +25,7 @@ namespace CondenserDotNet.Client.Services
         private static int s_getServiceDelay = 3000;
         private Action<List<InformationServiceSet>> _listCallback;
 
-        internal ServiceWatcher(string serviceName, HttpClient client, IRoutingStrategy<InformationServiceSet> routingStrategy, ILogger logger)
+        internal ServiceWatcher(string serviceName, ConsulApiClient client, IRoutingStrategy<InformationServiceSet> routingStrategy, ILogger logger)
         {
             _serviceName = serviceName;
             _logger = logger;
@@ -63,7 +63,7 @@ namespace CondenserDotNet.Client.Services
             return _routingStrategy.RouteTo(instances)?.Service;
         }
 
-        private async Task WatcherLoop(HttpClient client)
+        private async Task WatcherLoop(ConsulApiClient client)
         {
             try
             {
