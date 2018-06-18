@@ -57,5 +57,10 @@ namespace CondenserTests.Fakes
         {
             throw new NotImplementedException();
         }
+
+        public Task<HttpResponseMessage> PutAsync(string url, StringContent content)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
