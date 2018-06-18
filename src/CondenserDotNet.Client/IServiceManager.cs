@@ -19,6 +19,7 @@ namespace CondenserDotNet.Client
         int ServicePort { get; }
         CancellationToken Cancelled { get; }
         Task<HttpResponseMessage> PutAsync<T>(string url, T content);
+        Task<HttpResponseMessage> PutAsync(string url, StringContent content);
         Task<HttpResponseMessage> PutAsync(string url);
         Task<HttpResponseMessage> GetAsync(string url);
         List<string> SupportedUrls { get; }

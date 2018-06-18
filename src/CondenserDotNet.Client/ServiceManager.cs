@@ -56,8 +56,15 @@ namespace CondenserDotNet.Client
         public Task<HttpResponseMessage> PutAsync<T>(string url, T content)
         {
             var stringContent = HttpUtils.GetStringContent<T>(content);
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
-            httpRequest.Content = stringContent;
+            return PutAsync(url, stringContent);
+        }
+
+        public Task<HttpResponseMessage> PutAsync(string url, StringContent content)
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Put, url)
+            {
+                Content = content
+            };
             if (!string.IsNullOrWhiteSpace(_config.AclToken))
             {
                 httpRequest.Headers.Add("X-Consul-Token", _config.AclToken);
@@ -67,7 +74,7 @@ namespace CondenserDotNet.Client
 
         public Task<HttpResponseMessage> PutAsync(string url)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+            var httpRequest = new HttpRequestMessage(HttpMethod.Put, url);
             if (!string.IsNullOrWhiteSpace(_config.AclToken))
             {
                 httpRequest.Headers.Add("X-Consul-Token", _config.AclToken);
@@ -77,7 +84,7 @@ namespace CondenserDotNet.Client
 
         public Task<HttpResponseMessage> GetAsync(string url)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
             if (!string.IsNullOrWhiteSpace(_config.AclToken))
             {
                 httpRequest.Headers.Add("X-Consul-Token", _config.AclToken);
