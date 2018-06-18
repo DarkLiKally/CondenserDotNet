@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -13,13 +13,13 @@ namespace CondenserDotNet.Client
         public static Task EnableMaintenanceModeAsync(this IServiceManager manager, string reason)
         {
             var url = _url + $"{manager.ServiceId}?enable=true&reason={Uri.EscapeDataString(reason)}";
-            return manager.Client.PutAsync(url, null);
+            return manager.PutAsync(url);
         }
 
         public static Task DisableMaintenanceModeAsync(this IServiceManager manager)
         {
             var url = _url + $"{manager.ServiceId}?enable=false";
-            return manager.Client.PutAsync(url, new StringContent(string.Empty));
+            return manager.PutAsync(url, string.Empty);
         }
     }
 }

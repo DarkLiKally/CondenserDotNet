@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CondenserDotNet.Client.DataContracts;
@@ -33,7 +33,7 @@ namespace CondenserDotNet.Client.Leadership
             {
                 _currentLeaderEvent.Reset();
                 _electedLeaderEvent.Reset();
-                var result = await _serviceManager.Client.PutAsync(HttpUtils.SessionCreateUrl, GetCreateSession());
+                var result = await _serviceManager.PutAsync(HttpUtils.SessionCreateUrl, GetCreateSession());
                 if (!result.IsSuccessStatusCode)
                 {
                     await Task.Delay(1000);
@@ -51,7 +51,7 @@ namespace CondenserDotNet.Client.Leadership
                 //If we are here we don't know who is the leader
                 _electedLeaderEvent.Reset();
                 _currentLeaderEvent.Reset();
-                var leaderResult = await _serviceManager.Client.PutAsync($"{KeyPath}{_keyToWatch}?acquire={_sessionId}", GetServiceInformation());
+                var leaderResult = await _serviceManager.PutAsync($"{KeyPath}{_keyToWatch}?acquire={_sessionId}", GetServiceInformation());
                 if (!leaderResult.IsSuccessStatusCode)
                 {
                     //error so we need to get a new session
@@ -65,7 +65,7 @@ namespace CondenserDotNet.Client.Leadership
                 }
                 for (var i = 0; i < 2; i++)
                 {
-                    leaderResult = await _serviceManager.Client.GetAsync($"{KeyPath}{_keyToWatch}?index={_consulIndex}");
+                    leaderResult = await _serviceManager.GetAsync($"{KeyPath}{_keyToWatch}?index={_consulIndex}");
                     if (!leaderResult.IsSuccessStatusCode)
                     {
                         //error so return to create session

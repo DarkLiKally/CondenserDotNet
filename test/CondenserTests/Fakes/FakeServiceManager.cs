@@ -6,6 +6,7 @@ using CondenserDotNet.Client.DataContracts;
 using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace CondenserTests.Fakes
 {
@@ -41,5 +42,20 @@ namespace CondenserTests.Fakes
         public List<string> CustomTags => throw new NotImplementedException();
 
         public void Dispose() => throw new NotImplementedException();
+
+        public Task<HttpResponseMessage> GetAsync(string url)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<HttpResponseMessage> PutAsync<T>(string url, T content)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<HttpResponseMessage> PutAsync(string url)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

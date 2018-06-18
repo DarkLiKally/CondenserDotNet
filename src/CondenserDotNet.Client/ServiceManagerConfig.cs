@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Net;
 using System.Net.Sockets;
@@ -18,6 +18,7 @@ namespace CondenserDotNet.Client
         public Tuple<int, string>[] PortAndSchemes { get; set; }
         public string[] EndsToStrip { get; set; } = { ".Host", ".Library", ".Service" };
         public bool UseMultipleProtocols { get; set; } = true;
+        public string AclToken { get; set; } = null;
 
         public static int GetNextAvailablePort()
         {

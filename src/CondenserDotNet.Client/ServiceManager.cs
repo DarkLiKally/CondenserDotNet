@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using CondenserDotNet.Client.DataContracts;
 using CondenserDotNet.Core;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -17,6 +18,7 @@ namespace CondenserDotNet.Client
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
         private bool _disposed;
         private ITtlCheck _ttlCheck;
+        private ServiceManagerConfig _config;
 
         public ServiceManager(IOptions<ServiceManagerConfig> optionsConfig, Func<HttpClient> httpClientFactory = null, ILoggerFactory logFactory = null, IServer server = null)
         {
@@ -25,20 +27,20 @@ namespace CondenserDotNet.Client
                 throw new ArgumentOutOfRangeException($"A valid server port needs to be set through either the options or the hosting server");
             }
 
-            var config = optionsConfig.Value;
+            _config = optionsConfig.Value;
             Logger = logFactory?.CreateLogger<ServiceManager>();
             Client = httpClientFactory?.Invoke() ?? HttpUtils.CreateClient();
-            config.SetDefaults(server);
-            ServiceId = config.ServiceId;
-            ServiceName = config.ServiceName;
-            ServiceAddress = config.ServiceAddress;
-            ServicePort = config.ServicePort;
+            _config.SetDefaults(server);
+            ServiceId = _config.ServiceId;
+            ServiceName = _config.ServiceName;
+            ServiceAddress = _config.ServiceAddress;
+            ServicePort = _config.ServicePort;
         }
 
         public List<string> SupportedUrls => _supportedUrls;
         public List<string> CustomTags => _customTags;
         public ILogger Logger { get; }
-        public HttpClient Client { get; }
+        private HttpClient Client { get; }
         public HealthConfiguration HealthConfig { get; private set; } = new HealthConfiguration();
         public Service RegisteredService { get; set; }
         public string ServiceId { get; }
@@ -50,6 +52,38 @@ namespace CondenserDotNet.Client
         public int ServicePort { get; }
         public CancellationToken Cancelled => _cancel.Token;
         public string ProtocolSchemeTag { get; set; }
+
+        public Task<HttpResponseMessage> PutAsync<T>(string url, T content)
+        {
+            var stringContent = HttpUtils.GetStringContent<T>(content);
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+            httpRequest.Content = stringContent;
+            if (!string.IsNullOrWhiteSpace(_config.AclToken))
+            {
+                httpRequest.Headers.Add("X-Consul-Token", _config.AclToken);
+            }
+            return Client.SendAsync(httpRequest);
+        }
+
+        public Task<HttpResponseMessage> PutAsync(string url)
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+            if (!string.IsNullOrWhiteSpace(_config.AclToken))
+            {
+                httpRequest.Headers.Add("X-Consul-Token", _config.AclToken);
+            }
+            return Client.SendAsync(httpRequest);
+        }
+
+        public Task<HttpResponseMessage> GetAsync(string url)
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, url);
+            if (!string.IsNullOrWhiteSpace(_config.AclToken))
+            {
+                httpRequest.Headers.Add("X-Consul-Token", _config.AclToken);
+            }
+            return Client.SendAsync(httpRequest);
+        }
 
         public void Dispose()
         {
@@ -70,7 +104,7 @@ namespace CondenserDotNet.Client
                 _disposed = true;
             }
         }
-        
+
         ~ServiceManager() => Dispose(false);
     }
 }
