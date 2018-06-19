@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using CondenserDotNet.Client.DataContracts;
 using CondenserDotNet.Core;
+using CondenserDotNet.Core.Consul;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,7 @@ namespace CondenserDotNet.Client
         private bool _disposed;
         private ITtlCheck _ttlCheck;
 
-        public ServiceManager(IOptions<ServiceManagerConfig> optionsConfig, Func<HttpClient> httpClientFactory = null, ILoggerFactory logFactory = null, IServer server = null)
+        public ServiceManager(IOptions<ServiceManagerConfig> optionsConfig, Func<HttpClient> httpClientFactory = null, ILoggerFactory logFactory = null, IServer server = null, IConsulAclProvider aclProvider = null)
         {
             if (optionsConfig.Value.ServicePort == 0 && server == null)
             {
@@ -27,7 +28,7 @@ namespace CondenserDotNet.Client
 
             var config = optionsConfig.Value;
             Logger = logFactory?.CreateLogger<ServiceManager>();
-            Client = httpClientFactory?.Invoke() ?? HttpUtils.CreateClient();
+            Client = httpClientFactory?.Invoke() ?? HttpUtils.CreateClient(aclProvider);
             config.SetDefaults(server);
             ServiceId = config.ServiceId;
             ServiceName = config.ServiceName;
